@@ -1,9 +1,15 @@
 ceph_repository: rhcs
 ceph_origin: repository
 ceph_iscsi_config_dev: false
+<<<<<<< HEAD
 fetch_directory: ~/ceph-ansible-keys
 ceph_rhcs_version: 4
 ceph_docker_image: "rhceph/rhceph-4-rhel8"
+=======
+ceph_rhcs_version: 5
+containerized_deployment: true
+ceph_docker_image: "rhceph/rhceph-5-rhel8"
+>>>>>>> a2cbab16a... rhcs: drop fetch_directory override
 ceph_docker_image_tag: "latest"
 ceph_docker_registry: "registry.redhat.io"
 ceph_docker_registry_auth: true
