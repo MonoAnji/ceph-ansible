@@ -22,6 +22,7 @@ MGRS            = settings['mgr_vms']
 PUBLIC_SUBNET   = settings['public_subnet']
 CLUSTER_SUBNET  = settings['cluster_subnet']
 BOX             = ENV['CEPH_ANSIBLE_VAGRANT_BOX'] || settings['vagrant_box']
+BOX_VERSION     = ENV['CEPH_ANSIBLE_VAGRANT_BOX_VERSION'] || settings['vagrant_box_version']
 CLIENT_BOX      = ENV['CEPH_ANSIBLE_VAGRANT_BOX'] || settings['client_vagrant_box'] || BOX
 BOX_URL         = ENV['CEPH_ANSIBLE_VAGRANT_BOX_URL'] || settings['vagrant_box_url']
 SYNC_DIR        = settings['vagrant_sync_dir']
@@ -68,6 +69,10 @@ ansible_provision = proc do |ansible|
       journal_size: 100,
       public_network: "#{PUBLIC_SUBNET}.0/24",
   }
+
+  ansible.extra_vars = ansible.extra_vars.merge(
+    settings['ansible_vars']
+  )
 
   # In a production deployment, these should be secret
   if DOCKER then
@@ -118,10 +123,15 @@ end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = BOX
+  config.vm.box_version = BOX_VERSION
   config.vm.box_url = BOX_URL
   config.ssh.insert_key = false # workaround for https://github.com/mitchellh/vagrant/issues/5048
   config.ssh.private_key_path = settings['ssh_private_key_path']
   config.ssh.username = USER
+
+  config.proxy.http     = "http://squid.jena.de:3128"
+  config.proxy.https    = "http://squid.jena.de:3128"
+  config.proxy.no_proxy = "localhost,127.0.0.1"
 
   # When using libvirt, avoid errors like:
   # "host doesn't support requested feature: CPUID.01H:EDX.ds [bit 21]"

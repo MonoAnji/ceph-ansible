@@ -1,4 +1,13 @@
 ---
+- name: install dependencies
+  package:
+    name: parted
+    state: present
+  register: result
+  until: result is succeeded
+  when:
+    - ansible_os_family != 'ClearLinux'
+
 - name: find device used for operating system
   command: findmnt -v -n -T / -o SOURCE
   changed_when: false

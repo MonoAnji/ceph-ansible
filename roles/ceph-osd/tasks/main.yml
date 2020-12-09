@@ -33,7 +33,7 @@
   when:
     - containerized_deployment | bool
     - ceph_osd_numactl_opts | length > 0
-  tags: with_pkg
+  tags: with_pkg<
 
 - name: include_tasks common.yml
   include_tasks: common.yml
